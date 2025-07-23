@@ -3,6 +3,7 @@ import authRouter from "./auth";
 import sharedRouter from "./shared";
 import pg from "../config/db.config";
 import { User } from "../config/entities/User";
+import userRouter from "./user";
 import { Product } from "../config/entities/Product";
 
 const router = Router();
@@ -33,5 +34,6 @@ router.get("/products-list", async (_, res) => {
 
 router.use("/auth", authRouter);
 router.use("/shared", sharedRouter);
+router.use("/user", userRouter);
 
 export default router;
