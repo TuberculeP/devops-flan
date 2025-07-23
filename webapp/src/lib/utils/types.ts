@@ -13,16 +13,32 @@ export type Note = {
 export type User = {
   id: string;
   email: string;
+  password?: string;
   firstName: string;
   lastName: string;
   isActive: boolean;
   role: string;
-  following: User[];
-  followers: Record<string, any>[];
-  posts: Record<string, any>[];
-  likedPosts: Record<string, any>[];
-  subscription: Record<string, any>;
-  sentMessages: Record<string, any>[];
-  receivedMessages: Record<string, any>[];
   createdAt: Date;
+  products: Product[];
+  comments: Comment[];
+};
+
+export type Comment = {
+  id: string;
+  user: User;
+  product: Product;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Product = {
+  id: string;
+  user: User;
+  comments: Comment[];
+  title: string;
+  image: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

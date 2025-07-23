@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import TotalUsersComponent from "../components/TotalUsersComponent.vue";
-import TotalProductsComponent from "../components/TotalProductsComponent.vue";
+import TotalUsersComponent from "../components/TotalUsersCountComponent.vue";
+import TotalProductsComponent from "../components/TotalProductsCountComponent.vue";
 </script>
 
 <template>

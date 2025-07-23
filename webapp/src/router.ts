@@ -7,6 +7,7 @@ import { useAuthStore } from "./stores/authStore";
 import apiClient from "./lib/utils/apiClient";
 import type { User } from "./lib/utils/types";
 import Main from "./views/Main.vue";
+import ProductView from "./views/ProductView.vue";
 import DashboardUser from "./views/DashboardUser.vue";
 
 async function authGuard(to: any, from: any, next: any) {
@@ -30,6 +31,7 @@ const routes = [
   { path: "/dashboard", component: DashboardUser, name: "dashborad-user" },
   { path: "/login", component: LoginView, name: "app-login" },
   { path: "/register", component: RegisterView, name: "app-register" },
+  { path: "/product", component: ProductView, name: "product-page" },
 ];
 
 const getGuardedRoutes = () => {
