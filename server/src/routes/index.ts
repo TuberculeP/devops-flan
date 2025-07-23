@@ -25,7 +25,6 @@ router.get("/all-products-count", async (_, res) => {
   res.json({ count: productCount });
 });
 
-
 router.use("/auth", authRouter);
 router.use("/shared", sharedRouter);
 

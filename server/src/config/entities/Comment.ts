@@ -15,7 +15,7 @@ export class Comment {
 
   @ManyToOne(() => User, (user) => user.comments)
   user: User;
-  
+
   @ManyToOne(() => Product, (product) => product.comments)
   product: Product;
 
