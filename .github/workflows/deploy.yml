@@ -37,23 +37,38 @@ jobs:
       run: |
         aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
-    - name: Build and Push Docker image to ECR
+    - name: Build and Push App Docker image to ECR
       run: |
-        IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
-        docker build -t $ECR_REPO:$IMAGE_TAG .
-        docker tag $ECR_REPO:$IMAGE_TAG $IMAGE_URI
-        docker push $IMAGE_URI
-        echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+        APP_IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO-app:$IMAGE_TAG
+        docker build -t $ECR_REPO-app:$IMAGE_TAG -f docker/app.dockerfile .
+        docker tag $ECR_REPO-app:$IMAGE_TAG $APP_IMAGE_URI
+        docker push $APP_IMAGE_URI
+        echo "APP_IMAGE_URI=$APP_IMAGE_URI" >> $GITHUB_ENV
 
-    - name: Update ECS service with new image
+    - name: Build and Push Prometheus Docker image to ECR
+      run: |
+        PROMETHEUS_IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO-prometheus:$IMAGE_TAG
+        docker build -t $ECR_REPO-prometheus:$IMAGE_TAG -f docker/prometheus.dockerfile .
+        docker tag $ECR_REPO-prometheus:$IMAGE_TAG $PROMETHEUS_IMAGE_URI
+        docker push $PROMETHEUS_IMAGE_URI
+        echo "PROMETHEUS_IMAGE_URI=$PROMETHEUS_IMAGE_URI" >> $GITHUB_ENV
+
+    - name: Update ECS service with new images
       run: |
         TASK_DEF=$(aws ecs describe-services --cluster $ECS_CLUSTER --services $ECS_SERVICE --query "services[0].taskDefinition" --output text)
         NEW_TASK_DEF=$(aws ecs describe-task-definition --task-definition $TASK_DEF)
 
-        # Replace image in container definitions
-        NEW_CONTAINER_DEFS=$(echo "$NEW_TASK_DEF" | jq --arg IMAGE "$IMAGE_URI" '.taskDefinition.containerDefinitions | map(if .name == env.CONTAINER_NAME then .image = $IMAGE else . end)')
+        # Replace images in container definitions
+        NEW_CONTAINER_DEFS=$(echo "$NEW_TASK_DEF" | jq \
+          --arg APP_IMAGE "$APP_IMAGE_URI" \
+          --arg PROMETHEUS_IMAGE "$PROMETHEUS_IMAGE_URI" \
+          '.taskDefinition.containerDefinitions | map(
+            if .name == "app" then .image = $APP_IMAGE 
+            elif .name == "prometheus" then .image = $PROMETHEUS_IMAGE 
+            else . end
+          )')
 
-        # Register new task definition with updated image
+        # Register new task definition with updated images
         FAMILY=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.family')
         ROLE=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.taskRoleArn')
         EXEC_ROLE=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.executionRoleArn')
