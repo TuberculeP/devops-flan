@@ -3,31 +3,31 @@ import { onMounted, ref } from "vue";
 import apiClient from "../lib/utils/apiClient";
 
 const loading = ref(false);
-const userCount = ref<number>();
+const productCount = ref<number>();
 
-async function loadUserCount() {
+async function loadProductCount() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ count: number }>(
-    "all-users-count",
+    "all-products-count",
   );
   if (!data || error) {
     console.error("Failed to load user count:", error);
   } else {
-    userCount.value = data.count;
+    productCount.value = data.count;
     loading.value = false;
   }
 }
 
 onMounted(() => {
-  loadUserCount();
+  loadProductCount();
 });
 </script>
 
 <template>
   <div>
     <p v-if="loading">Chargement...</p>
-    <p v-else-if="userCount || userCount == 0">
-      Total des utilisateurs inscrits : {{ userCount }}
+    <p v-else-if="productCount || productCount == 0">
+      Total des produits créés : {{ productCount }}
     </p>
     <p v-else>Pas de réponse du serveur</p>
   </div>
