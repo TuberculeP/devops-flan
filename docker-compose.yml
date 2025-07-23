@@ -49,8 +49,6 @@ services:
         condition: service_healthy
     environment:
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}?sslmode=disable"
-    volumes:
-      - ./postgres_exporter.yml:/etc/postgres_exporter.yml
   
   prometheus:
     image: prom/prometheus
@@ -59,7 +57,7 @@ services:
       postgres-exporter:
         condition: service_started
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring:/etc/prometheus
       - prometheus_data:/prometheus
 
   grafana:
