@@ -39,7 +39,7 @@ services:
         - "3000:3000"
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/app.dockerfile
     container_name: express-vue-app
     environment:
       POSTGRES_URL: postgres://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}
@@ -69,13 +69,14 @@ services:
           - postgres_exporter
   
   prometheus:
-    image: prom/prometheus
+    build:
+      context: .
+      dockerfile: docker/prometheus.dockerfile
     container_name: prometheus
     depends_on:
       postgres-exporter:
         condition: service_started
     volumes:
-      - ./monitoring:/etc/prometheus
       - prometheus_data:/prometheus
     networks:
       app_network:
