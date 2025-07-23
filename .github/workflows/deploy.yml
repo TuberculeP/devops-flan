@@ -1,0 +1,81 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: eu-west-3
+  ECR_REPO: dev-myapp
+  ECS_CLUSTER: devops-flan-cluster
+  ECS_SERVICE: devops-flan-service
+  CONTAINER_NAME: dev-myapp
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Get AWS Account ID
+      id: login-info
+      run: |
+        echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
+
+    - name: Login to ECR
+      run: |
+        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+    - name: Build and Push Docker image to ECR
+      run: |
+        IMAGE_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+        docker build -t $ECR_REPO:$IMAGE_TAG .
+        docker tag $ECR_REPO:$IMAGE_TAG $IMAGE_URI
+        docker push $IMAGE_URI
+        echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+    - name: Update ECS service with new image
+      run: |
+        TASK_DEF=$(aws ecs describe-services --cluster $ECS_CLUSTER --services $ECS_SERVICE --query "services[0].taskDefinition" --output text)
+        NEW_TASK_DEF=$(aws ecs describe-task-definition --task-definition $TASK_DEF)
+
+        # Replace image in container definitions
+        NEW_CONTAINER_DEFS=$(echo "$NEW_TASK_DEF" | jq --arg IMAGE "$IMAGE_URI" '.taskDefinition.containerDefinitions | map(if .name == env.CONTAINER_NAME then .image = $IMAGE else . end)')
+
+        # Register new task definition with updated image
+        FAMILY=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.family')
+        ROLE=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.taskRoleArn')
+        EXEC_ROLE=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.executionRoleArn')
+        CPU=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.cpu')
+        MEMORY=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.memory')
+        NETWORK_MODE=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.networkMode')
+        COMPAT=$(echo "$NEW_TASK_DEF" | jq -r '.taskDefinition.requiresCompatibilities[]')
+
+        NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+          --family "$FAMILY" \
+          --task-role-arn "$ROLE" \
+          --execution-role-arn "$EXEC_ROLE" \
+          --network-mode "$NETWORK_MODE" \
+          --container-definitions "$NEW_CONTAINER_DEFS" \
+          --cpu "$CPU" \
+          --memory "$MEMORY" \
+          --requires-compatibilities "$COMPAT" \
+          --query "taskDefinition.taskDefinitionArn" \
+          --output text)
+
+        # Update ECS service to use new task definition
+        aws ecs update-service \
+          --cluster $ECS_CLUSTER \
+          --service $ECS_SERVICE \
+          --task-definition $NEW_TASK_DEF_ARN
