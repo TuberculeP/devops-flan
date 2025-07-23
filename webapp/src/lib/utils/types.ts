@@ -30,7 +30,7 @@ export type Comment = {
   text: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type Product = {
   id: string;
@@ -41,4 +41,4 @@ export type Product = {
   description: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};

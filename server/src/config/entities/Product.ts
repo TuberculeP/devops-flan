@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  OneToMany
+  OneToMany,
 } from "typeorm";
 import { User } from "./User";
 import { Comment } from "./Comment";
@@ -25,7 +25,7 @@ export class Product {
 
   @Column()
   image: string;
-  
+
   @Column()
   description: string;
 

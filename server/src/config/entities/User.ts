@@ -40,7 +40,7 @@ export class User {
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
-  
+
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
 }

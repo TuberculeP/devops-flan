@@ -27,12 +27,12 @@ onMounted(() => {
 <template>
   <div>
     <p v-if="loading">Chargement...</p>
-    <p v-else-if="productList && productList.length > 0">
+    <div v-else-if="productList && productList.length > 0">
       Listes des produits créés :
       <div v-for="product in productList">
         <h2>{{ product.title }}</h2>
       </div>
-    </p>
+    </div>
     <p v-else>Pas de produits</p>
   </div>
 </template>

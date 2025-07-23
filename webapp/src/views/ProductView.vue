@@ -5,6 +5,6 @@ import TotalProductsListComponent from "../components/TotalProductsListComponent
 <template>
   <div>
     <h1>Produits</h1>
-    <TotalProductsListComponent/>
+    <TotalProductsListComponent />
   </div>
 </template>
