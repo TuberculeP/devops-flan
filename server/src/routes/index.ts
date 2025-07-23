@@ -6,7 +6,6 @@ import { User } from "../config/entities/User";
 import userRouter from "./user";
 import { Product } from "../config/entities/Product";
 
-
 const router = Router();
 
 router.get("/", (_, res) => {
