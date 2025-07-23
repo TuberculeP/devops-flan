@@ -37,6 +37,7 @@ services:
   app:
     ports: 
         - "3000:3000"
+        - "80:80"
     build:
       context: .
       dockerfile: docker/app.dockerfile
