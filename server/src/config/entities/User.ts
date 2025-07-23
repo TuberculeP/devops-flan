@@ -6,6 +6,8 @@ import {
   OneToMany,
 } from "typeorm";
 import { Upload } from "./Upload";
+import { Product } from "./Product";
+import { Comment } from "./Comment";
 
 @Entity()
 export class User {
@@ -35,4 +37,10 @@ export class User {
 
   @OneToMany(() => Upload, (upload) => upload.user)
   uploads: Upload[];
+
+  @OneToMany(() => Product, (product) => product.user)
+  products: Product[];
+  
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }
