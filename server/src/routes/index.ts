@@ -28,8 +28,29 @@ router.get("/all-products-count", async (_, res) => {
 
 router.get("/products-list", async (_, res) => {
   const productRepository = pg.getRepository(Product);
-  const productCount = await productRepository.find();
-  res.json({ products: productCount });
+  const productList = await productRepository.find();
+  res.json({ products: productList });
+});
+
+router.get("/products-list-user", async (req, res) => {
+  console.warn("products-list-user", req.user);
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const productRepository = pg.getRepository(Product);
+  const productList = await productRepository.find({
+    where: {
+      user: {
+        id: req.user.id,
+      },
+    },
+    relations: ["user", "comments"],
+  });
+  console.warn("productList", productList);
+
+  res.json({ products: productList });
 });
 
 router.get("/product/:id", async (req, res) => {

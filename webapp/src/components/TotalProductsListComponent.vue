@@ -41,12 +41,6 @@ onMounted(() => {
           <h2>{{ product.title }}</h2>
           <p>{{ product.description }}</p>
           <img :src="product.image" alt="" style="width: 200px" />
-          <div v-if="product.comments" v-for="comment in product.comments">
-            <div>
-              <p>{{ comment.user.firstName }} :</p>
-              <p>{{ comment.text }}</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
