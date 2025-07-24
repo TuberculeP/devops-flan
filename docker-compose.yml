@@ -44,6 +44,7 @@ services:
     container_name: express-vue-app
     environment:
       POSTGRES_URL: postgres://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}
+      APP_INTERNAL_PORT: ${APP_INTERNAL_PORT:-3000}
     depends_on:
       postgres:
         condition: service_healthy
@@ -56,7 +57,7 @@ services:
         aliases:
           - app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_INTERNAL_PORT:-3000}"]
       interval: 10s
       timeout: 5s
       retries: 5
