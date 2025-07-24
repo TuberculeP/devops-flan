@@ -3,8 +3,8 @@ import TotalProductsListComponent from "../components/TotalProductsListComponent
 </script>
 
 <template>
-  <div>
-    <h1>Produits</h1>
-    <TotalProductsListComponent />
-  </div>
+	<div>
+		<h1>Produits</h1>
+		<TotalProductsListComponent />
+	</div>
 </template>

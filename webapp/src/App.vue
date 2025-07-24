@@ -3,20 +3,20 @@ import AppLayout from "./layouts/AppLayout.vue";
 import { onSocketConnected } from "./lib/utils/websocket";
 
 onSocketConnected((socket) => {
-  socket.emit("test", { message: "Hello from Vue!" });
+	socket.emit("test", { message: "Hello from Vue!" });
 });
 </script>
 
 <template>
-  <AppLayout>
-    <RouterView />
-  </AppLayout>
+	<AppLayout>
+		<RouterView />
+	</AppLayout>
 </template>
 
 <style>
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 </style>

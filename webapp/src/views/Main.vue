@@ -4,9 +4,9 @@ import TotalProductsComponent from "../components/TotalProductsCountComponent.vu
 </script>
 
 <template>
-  <div>
-    <h1>Accueil</h1>
-    <TotalUsersComponent />
-    <TotalProductsComponent />
-  </div>
+	<div>
+		<h1>Accueil</h1>
+		<TotalUsersComponent />
+		<TotalProductsComponent />
+	</div>
 </template>

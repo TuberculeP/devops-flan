@@ -15,52 +15,52 @@ import initializePassport from "./config/passport.config";
 import customSession from "./config/cache.config";
 
 const main = async () => {
-  const dev = process.env.NODE_ENV !== "production";
+	const dev = process.env.NODE_ENV !== "production";
 
-  initializePassport();
+	initializePassport();
 
-  const app = express();
-  const server = createHttpServer(app);
-  app
-    .use(express.json())
-    .use(customSession())
-    .use(cookieParser())
-    .use(express.json())
-    .use(passport.initialize())
-    .use(passport.session());
+	const app = express();
+	const server = createHttpServer(app);
+	app
+		.use(express.json())
+		.use(customSession())
+		.use(cookieParser())
+		.use(express.json())
+		.use(passport.initialize())
+		.use(passport.session());
 
-  app.use("/api", router);
+	app.use("/api", router);
 
-  const vite = await createViteServer();
+	const vite = await createViteServer();
 
-  app.use("/public", express.static("public"));
+	app.use("/public", express.static("public"));
 
-  if (dev) {
-    app.use(vite.middlewares);
-  } else {
-    app.use(express.static(path.resolve(__dirname, "./client")));
-  }
+	if (dev) {
+		app.use(vite.middlewares);
+	} else {
+		app.use(express.static(path.resolve(__dirname, "./client")));
+	}
 
-  app.use(async (req, res, next) => {
-    if (dev) {
-      vite.middlewares(req, res, next);
-    } else {
-      res.sendFile(path.resolve(__dirname, "./client/index.html"));
-    }
-  });
+	app.use(async (req, res, next) => {
+		if (dev) {
+			vite.middlewares(req, res, next);
+		} else {
+			res.sendFile(path.resolve(__dirname, "./client/index.html"));
+		}
+	});
 
-  // WebSocket server
-  const wss = new WSServer(server);
-  registerWebsocketListeners(wss);
+	// WebSocket server
+	const wss = new WSServer(server);
+	registerWebsocketListeners(wss);
 
-  server.listen(3000, () => {
-    console.log("> Ready on http://localhost:3000");
-  });
+	server.listen(3000, () => {
+		console.log("> Ready on http://localhost:3000");
+	});
 };
 
 // start typeorm migration and server
 (async () => {
-  await pg.initialize();
-  await pg.runMigrations();
-  await main();
+	await pg.initialize();
+	await pg.runMigrations();
+	await main();
 })();
