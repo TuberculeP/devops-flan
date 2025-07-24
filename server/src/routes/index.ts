@@ -53,6 +53,25 @@ router.get("/products-list-user", async (req, res) => {
   res.json({ products: productList });
 });
 
+router.get("/comments-list-user", async (req, res) => {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const commentRepository = pg.getRepository(Comment);
+  const commentList = await commentRepository.find({
+    where: {
+      user: {
+        id: req.user.id,
+      },
+    },
+    relations: ["user"],
+  });
+
+  res.json({ comment: commentList });
+});
+
 router.get("/product/:id", async (req, res) => {
   const productRepository = pg.getRepository(Product);
   const product = await productRepository.findOne({

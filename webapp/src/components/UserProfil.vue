@@ -18,6 +18,7 @@ const description = ref("");
 
 const loading = ref(false);
 const productList = ref<Product[]>();
+const commentList = ref<Comment[]>();
 
 // file
 const file = ref<File | null>(null);
@@ -62,7 +63,7 @@ const uploadFile = async () => {
   console.log(
     "\x1b[44m%s\x1b[0m",
     "webapp/src/views/TestView.vue:9 file",
-    file,
+    file
   );
   if (!file.value) {
     message.value = "Veuillez sélectionner un fichier.";
@@ -79,7 +80,7 @@ const uploadFile = async () => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    },
+    }
   );
   if (response.data && response.error === null) {
     uploadedFileUrl.value = response.data.url;
@@ -92,12 +93,25 @@ const uploadFile = async () => {
 async function loadProductList() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ products: Product[] }>(
-    "products-list-user",
+    "products-list-user"
   );
   if (!data || error) {
     console.error("Failed to load product list:", error);
   } else {
     productList.value = data.products;
+    loading.value = false;
+  }
+}
+
+async function loadCommentList() {
+  loading.value = true;
+  const { data, error } = await apiClient.get<{ comments: Comment[] }>(
+    "comments-list-user"
+  );
+  if (!data || error) {
+    console.error("Failed to load comment list:", error);
+  } else {
+    commentList.value = data.comment;
     loading.value = false;
   }
 }
@@ -108,6 +122,7 @@ function goToDetail(id: string) {
 
 onMounted(() => {
   loadProductList();
+  loadCommentList();
 });
 </script>
 
@@ -155,4 +170,15 @@ onMounted(() => {
     </div>
     <p v-else>Pas de produits</p>
   </section>
+  <br><br>
+  <p v-if="loading">Chargement...</p>
+  <div v-else-if="commentList && commentList.length > 0">
+    Listes des produits créés par vous :
+    <div v-for="comment in commentList">
+      <div @click="goToDetail(comment.id)">
+        <p>{{ comment.text }}</p>
+      </div>
+    </div>
+  </div>
+  <p v-else>Pas de commentaires</p>
 </template>
