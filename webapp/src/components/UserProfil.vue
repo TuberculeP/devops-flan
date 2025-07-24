@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthStore } from "../stores/authStore";
 import apiClient from "../lib/utils/apiClient";
+import type { Product, User } from "../lib/utils/types";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 //user
 const authStore = useAuthStore();
@@ -12,6 +16,9 @@ const email = ref(authStore.user?.email || "");
 const title = ref("");
 const description = ref("");
 
+const loading = ref(false);
+const productList = ref<Product[]>();
+
 // file
 const file = ref<File | null>(null);
 const message = ref<string | null>(null);
@@ -19,7 +26,7 @@ const uploadedFileUrl = ref<string | null>(null);
 
 //updateProfile
 async function updateProfile() {
-  const { data, error } = await apiClient.put("/user/update", {
+  const { data, error } = await apiClient.put<User>("/user/update", {
     firstName: name.value,
     email: email.value,
   });
@@ -81,6 +88,27 @@ const uploadFile = async () => {
     message.value = `Erreur: ${response.error}`;
   }
 };
+
+async function loadProductList() {
+  loading.value = true;
+  const { data, error } = await apiClient.get<{ products: Product[] }>(
+    "products-list-user",
+  );
+  if (!data || error) {
+    console.error("Failed to load product list:", error);
+  } else {
+    productList.value = data.products;
+    loading.value = false;
+  }
+}
+
+function goToDetail(id: string) {
+  router.push({ path: "detail", query: { id: id } });
+}
+
+onMounted(() => {
+  loadProductList();
+});
 </script>
 
 <template>
@@ -111,5 +139,20 @@ const uploadFile = async () => {
       /><br />
       <button type="submit">Ajouter un produit</button>
     </form>
+  </section>
+
+  <section>
+    <p v-if="loading">Chargement...</p>
+    <div v-else-if="productList && productList.length > 0">
+      Listes des produits créés par vous :
+      <div v-for="product in productList">
+        <div @click="goToDetail(product.id)">
+          <h2>{{ product.title }}</h2>
+          <p>{{ product.description }}</p>
+          <img :src="product.image" alt="" style="width: 200px" />
+        </div>
+      </div>
+    </div>
+    <p v-else>Pas de produits</p>
   </section>
 </template>
