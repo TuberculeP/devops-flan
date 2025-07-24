@@ -37,7 +37,17 @@ onMounted(() => {
     <div v-else-if="productList && productList.length > 0">
       Listes des produits créés :
       <div v-for="product in productList">
-        <h2 @click="goToDetail(product.id)">{{ product.title }}</h2>
+        <div @click="goToDetail(product.id)">
+          <h2>{{ product.title }}</h2>
+          <p>{{ product.description }}</p>
+          <img :src="product.image" alt="" style="width: 200px" />
+          <div v-if="product.comments" v-for="comment in product.comments">
+            <div>
+              <p>{{ comment.user.firstName }} :</p>
+              <p>{{ comment.text }}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <p v-else>Pas de produits</p>
