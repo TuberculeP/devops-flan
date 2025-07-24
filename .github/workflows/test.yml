@@ -1,4 +1,4 @@
-name: Run tests and upload coverage
+name: Run tests
 
 on:
   workflow_run:
@@ -22,10 +22,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npx jest --coverage --passWithNoTests
+      - name: Run Server Tests
+        run: npm run test:server
 
-      - name: Upload results to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Run Webapp Tests
+        run: npm run test:webapp

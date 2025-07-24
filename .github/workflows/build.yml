@@ -1,7 +1,6 @@
-name: Build
+name: Build & Test (Node.js)
 
-on:
-  push
+on: push
 
 jobs:
   build:
@@ -14,7 +13,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Change to your Node version
+          node-version: "18" # Change to your Node version
 
       - name: Install dependencies
         run: npm install
@@ -41,7 +40,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Change to your Node version
+          node-version: "18" # Change to your Node version
 
       - name: Download artifact
         uses: actions/download-artifact@v4
