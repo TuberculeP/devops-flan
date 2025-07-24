@@ -12,7 +12,7 @@ const product = ref<Product>();
 async function loadProduct() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ product: Product }>(
-    `products/${route.params.id}`,
+    `product/${route.query.id}`,
   );
   if (!data || error) {
     console.error("Failed to load product:", error);

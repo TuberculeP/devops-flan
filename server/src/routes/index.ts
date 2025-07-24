@@ -34,8 +34,32 @@ router.get("/products-list", async (_, res) => {
 
 router.get("/product/:id", async (req, res) => {
   const productRepository = pg.getRepository(Product);
-  const product = await productRepository.findOneBy({ id: req.params.id });
-  res.json({ products: product });
+  const product = await productRepository.findOne({
+    where: { id: req.params.id },
+    relations: ["user", "comments"],
+  });
+  res.json({ product: product });
+});
+
+router.post("/product/create", async (req, res) => {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const productRepository = pg.getRepository(Product);
+  const product = new Product();
+
+  product.user = req.user as User;
+  product.title = req.body.title;
+  product.description = req.body.description;
+  product.image = req.body.image;
+  product.createdAt = new Date();
+  product.updatedAt = new Date();
+
+  await productRepository.save(product);
+
+  res.json(product);
 });
 
 router.use("/auth", authRouter);
