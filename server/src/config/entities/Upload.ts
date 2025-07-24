@@ -1,29 +1,29 @@
 import {
-	Entity,
-	PrimaryGeneratedColumn,
-	ManyToOne,
-	Column,
-	CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  CreateDateColumn,
 } from "typeorm";
 import { User } from "./User";
 
 @Entity()
 export class Upload {
-	@PrimaryGeneratedColumn("uuid")
-	id: string;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
-	@ManyToOne(() => User, (user) => user.uploads)
-	user: User;
+  @ManyToOne(() => User, (user) => user.uploads)
+  user: User;
 
-	@Column()
-	filename: string;
+  @Column()
+  filename: string;
 
-	@CreateDateColumn()
-	createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-	@CreateDateColumn()
-	updatedAt: Date;
+  @CreateDateColumn()
+  updatedAt: Date;
 
-	@Column({ default: true })
-	isActive: boolean;
+  @Column({ default: true })
+  isActive: boolean;
 }

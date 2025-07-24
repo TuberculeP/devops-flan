@@ -9,33 +9,33 @@ import { Product } from "../config/entities/Product";
 const router = Router();
 
 router.get("/", (_, res) => {
-	res.json({
-		message: "Hello from the server!",
-	});
+  res.json({
+    message: "Hello from the server!",
+  });
 });
 
 router.get("/all-users-count", async (_, res) => {
-	const userRepository = pg.getRepository(User);
-	const userCount = await userRepository.count();
-	res.json({ count: userCount });
+  const userRepository = pg.getRepository(User);
+  const userCount = await userRepository.count();
+  res.json({ count: userCount });
 });
 
 router.get("/all-products-count", async (_, res) => {
-	const productRepository = pg.getRepository(Product);
-	const productCount = await productRepository.count();
-	res.json({ count: productCount });
+  const productRepository = pg.getRepository(Product);
+  const productCount = await productRepository.count();
+  res.json({ count: productCount });
 });
 
 router.get("/products-list", async (_, res) => {
-	const productRepository = pg.getRepository(Product);
-	const productCount = await productRepository.find();
-	res.json({ products: productCount });
+  const productRepository = pg.getRepository(Product);
+  const productCount = await productRepository.find();
+  res.json({ products: productCount });
 });
 
 router.get("/product/:id", async (req, res) => {
-	const productRepository = pg.getRepository(Product);
-	const product = await productRepository.findOneBy({ id: req.params.id });
-	res.json({ products: product });
+  const productRepository = pg.getRepository(Product);
+  const product = await productRepository.findOneBy({ id: req.params.id });
+  res.json({ products: product });
 });
 
 router.use("/auth", authRouter);

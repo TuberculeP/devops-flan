@@ -11,38 +11,38 @@ const DEFAULT_TLL = 60 * 60 * 24; // 1 day in seconds
 const DEFAULT_PREFIX = "sess:";
 
 const createStore = () => {
-	if (process.env.NODE_ENV === "production") {
-		const redisClient = createClient({
-			url: "redis://cache", // Use the Docker service name for Redis
-		});
-		redisClient.connect().catch(console.error);
+  if (process.env.NODE_ENV === "production") {
+    const redisClient = createClient({
+      url: "redis://cache", // Use the Docker service name for Redis
+    });
+    redisClient.connect().catch(console.error);
 
-		return new RedisStore({
-			client: redisClient,
-			prefix: DEFAULT_PREFIX,
-			ttl: DEFAULT_TLL,
-		});
-	} else {
-		const SqliteStore = sqliteStoreFactory(session);
-		return new SqliteStore({
-			driver: sqlite3.Database,
-			path: "./express_session_local.db",
-			ttl: DEFAULT_TLL,
-			prefix: DEFAULT_PREFIX,
-			cleanupInterval: 300000,
-		});
-	}
+    return new RedisStore({
+      client: redisClient,
+      prefix: DEFAULT_PREFIX,
+      ttl: DEFAULT_TLL,
+    });
+  } else {
+    const SqliteStore = sqliteStoreFactory(session);
+    return new SqliteStore({
+      driver: sqlite3.Database,
+      path: "./express_session_local.db",
+      ttl: DEFAULT_TLL,
+      prefix: DEFAULT_PREFIX,
+      cleanupInterval: 300000,
+    });
+  }
 };
 
 // Will be used in app.use
 export default function customSession() {
-	const store = createStore();
+  const store = createStore();
 
-	return session({
-		secret: "you'll never guess this (poulet froid)",
-		resave: false,
-		saveUninitialized: false,
-		cookie: { secure: false },
-		store,
-	});
+  return session({
+    secret: "you'll never guess this (poulet froid)",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+    store,
+  });
 }

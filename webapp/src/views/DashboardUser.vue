@@ -8,17 +8,17 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-	<div class="dashboard">
-		<h1>Dashboard de {{ authStore.user?.firstName }}</h1>
+  <div class="dashboard">
+    <h1>Dashboard de {{ authStore.user?.firstName }}</h1>
 
-		<UserProfil />
-		<!-- <UserProducts />
+    <UserProfil />
+    <!-- <UserProducts />
     <UserComments /> -->
-	</div>
+  </div>
 </template>
 
 <style scoped>
 .dashboard {
-	padding: 20px;
+  padding: 20px;
 }
 </style>
