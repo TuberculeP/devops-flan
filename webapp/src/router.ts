@@ -33,11 +33,11 @@ const routes = [
   { path: "/login", component: LoginView, name: "app-login" },
   { path: "/register", component: RegisterView, name: "app-register" },
   { path: "/products", component: ProductView, name: "product-page" },
-  { path: "/detail", component: ProductDetailView, name: "product-detail" },
+  { path: "/detail/:id", component: ProductDetailView, name: "product-detail" },
 ];
 
 const getGuardedRoutes = () => {
-  const guardedMatches = ["app", "dashboard"];
+  const guardedMatches = ["app", "dashboard", "products", "detail"];
   return routes.map((route) => {
     if (guardedMatches.some((match) => route.path.includes(match))) {
       return {
