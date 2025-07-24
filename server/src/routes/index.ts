@@ -33,7 +33,6 @@ router.get("/products-list", async (_, res) => {
 });
 
 router.get("/products-list-user", async (req, res) => {
-  console.warn("products-list-user", req.user);
   if (!req.isAuthenticated() || !req.user) {
     res.status(401).json({ message: "Unauthorized" });
     return;
@@ -48,7 +47,6 @@ router.get("/products-list-user", async (req, res) => {
     },
     relations: ["user", "comments"],
   });
-  console.warn("productList", productList);
 
   res.json({ products: productList });
 });
