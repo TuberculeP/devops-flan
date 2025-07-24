@@ -140,7 +140,7 @@ onMounted(() => {
       <button type="submit">Ajouter un produit</button>
     </form>
   </section>
-
+  
   <section>
     <p v-if="loading">Chargement...</p>
     <div v-else-if="productList && productList.length > 0">
