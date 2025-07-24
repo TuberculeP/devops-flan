@@ -52,9 +52,9 @@ const main = async () => {
   // WebSocket server
   const wss = new WSServer(server);
   registerWebsocketListeners(wss);
-
-  server.listen(3000, () => {
-    console.log("> Ready on http://localhost:3000");
+  const port = process.env.APP_INTERNAL_PORT || 3000;
+  server.listen(port, () => {
+    console.log("> Ready on http://localhost:" + port);
   });
 };
 
