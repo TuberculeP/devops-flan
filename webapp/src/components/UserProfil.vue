@@ -112,47 +112,145 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
-    <h2>Informations personnelles</h2>
-    <form @submit.prevent="updateProfile">
-      <label>Nom : <input v-model="name" /></label><br />
-      <label>Email : <input v-model="email" /></label><br />
-      <button type="submit">Mettre à jour</button>
-    </form>
-  </section>
-  <br />
+  <section class="form-section">
+    <div class="form-container">
+      <form @submit.prevent="updateProfile" class="form">
+        <h2>Infos Utilisateurs</h2>
+        <input type="text" v-model="name" placeholder="Nom" />
+        <input type="text" v-model="email" placeholder="Email" />
+        <button type="submit">Mettre à jour</button>
+      </form>
+    </div>
 
-  <section>
-    <h2>Produits</h2>
-    <form @submit.prevent="createProduct">
-      <label>Title : <input v-model="title" /></label><br />
-      <label>Description : <input v-model="description" /></label><br />
-      <input
-        type="file"
-        @change="
-          (e: Event) => {
-            const target = e.target as HTMLInputElement;
-            file = target?.files?.[0] || null;
-            uploadFile();
-          }
-        "
-      /><br />
-      <button type="submit">Ajouter un produit</button>
-    </form>
+    <div class="form-container">
+      <form @submit.prevent="createProduct" class="form">
+        <h2>Produits</h2>
+        <input type="text" v-model="title" placeholder="Title" />
+        <input type="text" v-model="description" placeholder="Description" />
+        <input
+          type="file"
+          @change="
+            (e: Event) => {
+              const target = e.target as HTMLInputElement;
+              file = target?.files?.[0] || null;
+              uploadFile();
+            }
+          "
+        /><br />
+        <button type="submit">Ajouter un produit</button>
+      </form>
+    </div>
   </section>
 
   <section>
     <p v-if="loading">Chargement...</p>
     <div v-else-if="productList && productList.length > 0">
-      Listes des produits créés par vous :
-      <div v-for="product in productList">
-        <div @click="goToDetail(product.id)">
-          <h2>{{ product.title }}</h2>
-          <p>{{ product.description }}</p>
-          <img :src="product.image" alt="" style="width: 200px" />
+      <h2 style="margin-bottom: 2em">Vos Produits :</h2>
+      <div class="grid-container">
+        <div v-for="product in productList" class="card">
+          <router-link :to="'/detail/' + product.id" class="product-link">
+            <img :src="product.image" alt="" />
+            <div class="card-content">
+              <h2>{{ product.title }}</h2>
+              <p>{{ product.description }}</p>
+            </div>
+          </router-link>
         </div>
       </div>
     </div>
     <p v-else>Pas de produits</p>
   </section>
 </template>
+
+<style scoped>
+.product-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* cards */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-content h3 {
+  margin-top: 0;
+}
+
+.card-content p {
+  color: #666;
+}
+
+/* form */
+.form-section {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+}
+
+.form-container {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.form {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form input[type="text"],
+.form input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.form button:hover {
+  background-color: #0056b3;
+}
+</style>
