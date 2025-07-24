@@ -22,10 +22,6 @@ async function loadProductList() {
   }
 }
 
-function goToDetail(id: string) {
-  router.push("/detail/" + id);
-}
-
 onMounted(() => {
   loadProductList();
 });
@@ -37,7 +33,7 @@ onMounted(() => {
     <div v-else-if="productList && productList.length > 0">
       Listes des produits créés :
       <div v-for="product in productList">
-        <div @click="goToDetail(product.id)">
+        <router-link :to="'/detail/' + product.id" class="product-link">
           <h2>{{ product.title }}</h2>
           <p>{{ product.description }}</p>
           <img :src="product.image" alt="" style="width: 200px" />
@@ -47,9 +43,16 @@ onMounted(() => {
               <p>{{ comment.text }}</p>
             </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
     <p v-else>Pas de produits</p>
   </div>
 </template>
+
+<style scoped>
+.product-link {
+  text-decoration: none;
+  color: inherit;
+}
+</style>
