@@ -11,7 +11,7 @@ userRouter.put("/update", async (req, res) => {
     ...req.body,
   });
 
-  return res.json(updatedUser);
+  res.json(updatedUser);
 });
 
 export default userRouter;

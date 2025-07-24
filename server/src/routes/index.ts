@@ -32,6 +32,12 @@ router.get("/products-list", async (_, res) => {
   res.json({ products: productCount });
 });
 
+router.get("/product/:id", async (req, res) => {
+  const productRepository = pg.getRepository(Product);
+  const product = await productRepository.findOneBy({ id: req.params.id });
+  res.json({ products: product });
+});
+
 router.use("/auth", authRouter);
 router.use("/shared", sharedRouter);
 router.use("/user", userRouter);
