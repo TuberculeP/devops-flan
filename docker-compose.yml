@@ -57,7 +57,7 @@ services:
         aliases:
           - app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:{APP_INTERNAL_PORT:-3000}"]
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_INTERNAL_PORT:-3000}"]
       interval: 10s
       timeout: 5s
       retries: 5
