@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../stores/authStore";
 import apiClient from "../lib/utils/apiClient";
-import type { Product } from "../lib/utils/types";
+import type { Product, User } from "../lib/utils/types";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -26,7 +26,7 @@ const uploadedFileUrl = ref<string | null>(null);
 
 //updateProfile
 async function updateProfile() {
-  const { data, error } = await apiClient.put("/user/update", {
+  const { data, error } = await apiClient.put<User>("/user/update", {
     firstName: name.value,
     email: email.value,
   });
@@ -140,7 +140,7 @@ onMounted(() => {
       <button type="submit">Ajouter un produit</button>
     </form>
   </section>
-  
+
   <section>
     <p v-if="loading">Chargement...</p>
     <div v-else-if="productList && productList.length > 0">
