@@ -3,8 +3,14 @@ import TotalProductsListComponent from "../components/TotalProductsListComponent
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h1>Produits</h1>
     <TotalProductsListComponent />
   </div>
 </template>
+
+<style scoped>
+.container {
+  padding: 20px;
+}
+</style>
