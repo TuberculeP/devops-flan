@@ -17,6 +17,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      metrics:
+        aliases:
+          - postgres
 
   cache:
     image: redis:latest
@@ -58,6 +62,10 @@ services:
         condition: service_healthy
     environment:
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}?sslmode=disable"
+    networks:
+      metrics:
+        aliases:
+          - postgres-exporter
 
   prometheus:
     build:
@@ -69,6 +77,10 @@ services:
         condition: service_started
     volumes:
       - prometheus_data:/prometheus
+    networks:
+      metrics:
+        aliases:
+          - prometheus
 
   grafana:
     image: grafana/grafana
@@ -78,6 +90,10 @@ services:
         condition: service_started
     volumes:
       - grafana_data:/var/lib/grafana
+    networks:
+      metrics:
+        aliases:
+          - grafana
 
 volumes:
   postgres_data:
@@ -85,3 +101,7 @@ volumes:
   public_app_data:
   prometheus_data:
   grafana_data:
+
+networks:
+  metrics:
+    driver: bridge
