@@ -103,8 +103,6 @@ async function loadProductList() {
   }
 }
 
-<<<<<<< HEAD
-=======
 async function loadCommentList() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ comment: Comment[] }>(
@@ -122,7 +120,6 @@ function goToDetail(id: string) {
   router.push({ path: "detail", query: { id: id } });
 }
 
->>>>>>> 908d9386ac0b970b11810663a971223d3298ebb3
 onMounted(() => {
   loadProductList();
   loadCommentList();
