@@ -17,10 +17,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      app_network:
-        aliases:
-          - postgres
 
   cache:
     image: redis:latest
@@ -32,10 +28,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      app_network:
-        aliases:
-          - cache
 
   app:
     build:
@@ -44,6 +36,7 @@ services:
     container_name: express-vue-app
     environment:
       POSTGRES_URL: postgres://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}
+      APP_INTERNAL_PORT: ${APP_INTERNAL_PORT:-3000}
     depends_on:
       postgres:
         condition: service_healthy
@@ -51,12 +44,8 @@ services:
         condition: service_healthy
     volumes:
       - public_app_data:/app/public
-    networks:
-      app_network:
-        aliases:
-          - app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_INTERNAL_PORT:-3000}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -69,10 +58,46 @@ services:
         condition: service_healthy
     environment:
       DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-mydatabase}?sslmode=disable"
-    networks:
-      app_network:
-        aliases:
-          - postgres_exporter
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9187/metrics",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:9100/metrics",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   prometheus:
     build:
@@ -81,13 +106,9 @@ services:
     container_name: prometheus
     depends_on:
       postgres-exporter:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - prometheus_data:/prometheus
-    networks:
-      app_network:
-        aliases:
-          - prometheus
 
   grafana:
     image: grafana/grafana
@@ -97,10 +118,6 @@ services:
         condition: service_started
     volumes:
       - grafana_data:/var/lib/grafana
-    networks:
-      app_network:
-        aliases:
-          - grafana
 
 volumes:
   postgres_data:
@@ -108,7 +125,3 @@ volumes:
   public_app_data:
   prometheus_data:
   grafana_data:
-
-networks:
-  app_network:
-    driver: bridge
