@@ -63,7 +63,7 @@ const uploadFile = async () => {
   console.log(
     "\x1b[44m%s\x1b[0m",
     "webapp/src/views/TestView.vue:9 file",
-    file
+    file,
   );
   if (!file.value) {
     message.value = "Veuillez sélectionner un fichier.";
@@ -80,7 +80,7 @@ const uploadFile = async () => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    }
+    },
   );
   if (response.data && response.error === null) {
     uploadedFileUrl.value = response.data.url;
@@ -93,7 +93,7 @@ const uploadFile = async () => {
 async function loadProductList() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ products: Product[] }>(
-    "products-list-user"
+    "products-list-user",
   );
   if (!data || error) {
     console.error("Failed to load product list:", error);
@@ -106,7 +106,7 @@ async function loadProductList() {
 async function loadCommentList() {
   loading.value = true;
   const { data, error } = await apiClient.get<{ comments: Comment[] }>(
-    "comments-list-user"
+    "comments-list-user",
   );
   if (!data || error) {
     console.error("Failed to load comment list:", error);
@@ -170,7 +170,7 @@ onMounted(() => {
     </div>
     <p v-else>Pas de produits</p>
   </section>
-  <br><br>
+  <br /><br />
   <p v-if="loading">Chargement...</p>
   <div v-else-if="commentList && commentList.length > 0">
     Listes des produits créés par vous :
