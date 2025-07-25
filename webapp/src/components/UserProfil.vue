@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useAuthStore } from "../stores/authStore";
 import apiClient from "../lib/utils/apiClient";
-import type { Product, User } from "../lib/utils/types";
+import type { Comment, Product, User } from "../lib/utils/types";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -105,7 +105,7 @@ async function loadProductList() {
 
 async function loadCommentList() {
   loading.value = true;
-  const { data, error } = await apiClient.get<{ comments: Comment[] }>(
+  const { data, error } = await apiClient.get<{ comment: Comment[] }>(
     "comments-list-user",
   );
   if (!data || error) {
