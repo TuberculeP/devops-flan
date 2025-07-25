@@ -81,6 +81,32 @@ router.get("/product/:id", async (req, res) => {
   res.json({ product: product });
 });
 
+router.put("/product/update", async (req, res) => {
+  if (!req.isAuthenticated() || !req.user) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  const productRepository = pg.getRepository(Product);
+  const product = await productRepository.findOne({
+    where: { id: req.body.id },
+    relations: ["user", "comments", "comments.user"],
+  });
+
+  if (!product) {
+    res.status(404).json({ message: "Product not found" });
+    return;
+  }
+
+  product.title = req.body.title;
+  product.description = req.body.description;
+  product.updatedAt = new Date();
+
+  await productRepository.save(product);
+
+  res.json(product);
+});
+
 router.post("/product/create", async (req, res) => {
   if (!req.isAuthenticated() || !req.user) {
     res.status(401).json({ message: "Unauthorized" });

@@ -36,7 +36,7 @@ const form = reactive({
 async function submitForm() {
   const result = await apiClient.post<{ user: User }>("/auth/login", form);
   if (!result.error) {
-    router.push({ name: redirect ?? "landing-main" });
+    router.push({ path: redirect ?? "/" });
   } else {
     console.error("Erreur lors de la connexion :", result.error);
   }
