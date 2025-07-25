@@ -18,6 +18,7 @@ const description = ref("");
 
 const loading = ref(false);
 const productList = ref<Product[]>();
+const commentList = ref<Comment[]>();
 
 // file
 const file = ref<File | null>(null);
@@ -102,12 +103,26 @@ async function loadProductList() {
   }
 }
 
+async function loadCommentList() {
+  loading.value = true;
+  const { data, error } = await apiClient.get<{ comments: Comment[] }>(
+    "comments-list-user",
+  );
+  if (!data || error) {
+    console.error("Failed to load comment list:", error);
+  } else {
+    commentList.value = data.comment;
+    loading.value = false;
+  }
+}
+
 function goToDetail(id: string) {
   router.push({ path: "detail", query: { id: id } });
 }
 
 onMounted(() => {
   loadProductList();
+  loadCommentList();
 });
 </script>
 
@@ -160,6 +175,18 @@ onMounted(() => {
     </div>
     <p v-else>Pas de produits</p>
   </section>
+
+  <br /><br />
+  <p v-if="loading">Chargement...</p>
+  <div v-else-if="commentList && commentList.length > 0">
+    <h3>Listes des commentaires créés par vous :</h3>
+    <div v-for="comment in commentList">
+      <div @click="goToDetail(comment.id)">
+        <p>{{ comment.text }}</p>
+      </div>
+    </div>
+  </div>
+  <p v-else>Pas de commentaires</p>
 </template>
 
 <style scoped>
