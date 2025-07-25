@@ -31,19 +31,16 @@ onMounted(() => {
   <div>
     <p v-if="loading">Chargement...</p>
     <div v-else-if="productList && productList.length > 0">
-      Listes des produits créés :
-      <div v-for="product in productList">
-        <router-link :to="'/detail/' + product.id" class="product-link">
-          <h2>{{ product.title }}</h2>
-          <p>{{ product.description }}</p>
-          <img :src="product.image" alt="" style="width: 200px" />
-          <div v-if="product.comments" v-for="comment in product.comments">
-            <div>
-              <p>{{ comment.user.firstName }} :</p>
-              <p>{{ comment.text }}</p>
+      <div class="grid-container">
+        <div v-for="product in productList" class="card">
+          <router-link :to="'/detail/' + product.id" class="product-link">
+            <img :src="product.image" alt="" />
+            <div class="card-content">
+              <h2>{{ product.title }}</h2>
+              <p>{{ product.description }}</p>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
       </div>
     </div>
     <p v-else>Pas de produits</p>
@@ -54,5 +51,43 @@ onMounted(() => {
 .product-link {
   text-decoration: none;
   color: inherit;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+.card-content h3 {
+  margin-top: 0;
+}
+
+.card-content p {
+  color: #666;
 }
 </style>

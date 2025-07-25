@@ -46,8 +46,9 @@ logs
 *.sqlite
 *.db
 
-# Ignore uploads directory
-/public/uploads/**/*
+# Ignore uploads directory content but not the directory itself
+/public/uploads/*
+!/public/uploads/.gitkeep
 
 # Terraform
 .terraform

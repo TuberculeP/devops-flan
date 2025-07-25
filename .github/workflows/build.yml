@@ -57,4 +57,4 @@ jobs:
         run: npm run start &
 
       - name: Check server is running
-        run: curl --max-time 10 --silent --fail http://localhost:3000
+        run: curl --max-time 10 --silent --fail http://localhost:${{ secrets.APP_INTERNAL_PORT || 3000 }}/ || exit 1
