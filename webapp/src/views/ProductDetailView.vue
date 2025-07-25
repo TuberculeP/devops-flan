@@ -3,8 +3,14 @@ import ProductDetail from "../components/ProductDetail.vue";
 </script>
 
 <template>
-  <div>
+  <div class="container">
     <h1>Produits</h1>
     <ProductDetail />
   </div>
 </template>
+
+<style scoped>
+.container {
+  padding: 20px;
+}
+</style>

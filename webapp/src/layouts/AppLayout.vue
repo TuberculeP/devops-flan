@@ -6,7 +6,7 @@
         class="product-link"
         style="text-decoration: none; color: black"
       >
-        <h2>Devops-Flan</h2>
+        <h1>Devops-Flan</h1>
       </router-link>
       <div id="router">
         <router-link to="/" class="product-link">
@@ -58,12 +58,12 @@ async function disconnect() {
   padding: 2em;
   align-items: center;
   text-align: center;
-  background-color: rgb(215, 237, 239);
+  background-color: #007bff;
   color: black;
   margin-bottom: 15px;
 
   height: 80px;
-  width: 100vw;
+  width: 100%;
 
   #router {
     display: flex;
@@ -74,7 +74,6 @@ async function disconnect() {
 .bouton {
   display: inline-block;
   padding: 10px 20px;
-  background-color: rgb(215, 237, 239);
   color: #000000;
   text-align: center;
   text-decoration: none;
@@ -89,17 +88,17 @@ async function disconnect() {
 }
 
 .route {
-  background-color: rgb(215, 237, 239);
+  background-color: #007bff;
   &:hover {
-    background-color: rgb(185, 215, 211);
+    background-color: #3c91ec;
     transform: scale(1.05);
   }
 }
 
 .disconnect {
-  background-color: rgb(166, 218, 222);
+  background-color: #0b72df;
   &:hover {
-    background-color: rgb(131, 194, 199);
+    background-color: #1a5ca2;
     transform: scale(1.05);
   }
 }
