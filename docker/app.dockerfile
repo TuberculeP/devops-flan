@@ -19,6 +19,7 @@ COPY --from=builder /app /app
 # Healthcheck useful
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 3000
+# use app internal port if set, otherwise default to 3000
+EXPOSE ${APP_INTERNAL_PORT:-3000}
 
 CMD ["npm", "start"]

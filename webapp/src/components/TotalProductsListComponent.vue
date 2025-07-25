@@ -32,19 +32,24 @@ onMounted(() => {
     <p v-if="loading">Chargement...</p>
     <div v-else-if="productList && productList.length > 0">
       <div class="grid-container">
+<<<<<<< HEAD
         <router-link
           :to="'/detail/' + product.id"
           v-for="product in productList"
           class="product-link card"
         >
           <div>
+=======
+        <div v-for="product in productList" class="card">
+          <router-link :to="'/detail/' + product.id" class="product-link">
+>>>>>>> 908d9386ac0b970b11810663a971223d3298ebb3
             <img :src="product.image" alt="" />
             <div class="card-content">
               <h2>{{ product.title }}</h2>
               <p>{{ product.description }}</p>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
       </div>
     </div>
     <p v-else>Pas de produits</p>
