@@ -170,10 +170,11 @@ onMounted(() => {
     </div>
     <p v-else>Pas de produits</p>
   </section>
-  <br><br>
+
+  <br /><br />
   <p v-if="loading">Chargement...</p>
   <div v-else-if="commentList && commentList.length > 0">
-    Listes des produits créés par vous :
+    <h3>Listes des commentaires créés par vous :</h3>
     <div v-for="comment in commentList">
       <div @click="goToDetail(comment.id)">
         <p>{{ comment.text }}</p>
