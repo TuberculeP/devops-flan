@@ -32,6 +32,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      metrics:
+        aliases:
+          - cache
 
   app:
     build:
@@ -53,6 +57,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      metrics:
+        aliases:
+          - app
 
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
