@@ -102,10 +102,6 @@ async function loadProductList() {
   }
 }
 
-function goToDetail(id: string) {
-  router.push({ path: "detail", query: { id: id } });
-}
-
 onMounted(() => {
   loadProductList();
 });
